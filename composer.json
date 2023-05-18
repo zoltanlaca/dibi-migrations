@@ -1,0 +1,28 @@
+{
+    "name": "zoltanlaca/dibi-migrations",
+    "description": "Dibi Database Migrations Library",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Zoltanlaca\\DibiMigrations\\": "src/Zoltanlaca/DibiMigrations"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Zoltanlaca\\DibiMigrations\\Examples\\": "examples"
+        }
+    },
+    "authors": [
+        {
+            "name": "Zoltan Laca",
+            "email": "lacazoltan@gmail.com",
+            "homepage": "https://github.com/zoltanlaca",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "dibi/dibi": "^4.2"
+    }
+}

@@ -1,13 +1,3 @@
-# dibi-migrations
-Dibi Database Migrations Library
-
-## Installation
-````bash
-composer require zoltanlaca/dibi-migrations
-````
-
-## Basic configuration
-````php
 <?php
 declare(strict_types=1);
 
@@ -45,24 +35,3 @@ try {
     echo $exception->getMessage(). PHP_EOL;
     exit;
 }
-````
-
-## Migrate to newest version
-````php
-$migrations->migrateUp();
-````
-
-## Migrate to defined version only
-````php
-$migrations->migrateUp(20230518085154);
-````
-
-## Revert migration to first version
-````php
-$migrations->migrateDown();
-````
-
-## Revert migration to defined version
-````php
-$migrations->migrateUp(20230518085154);
-````
