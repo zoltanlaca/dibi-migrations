@@ -172,6 +172,9 @@ final class Migrations
     public function create(): string
     {
         $template = file_get_contents(__DIR__ . '/Template/MigrationTemplate.php');
+        if($template === false){
+            throw new CannotCreateMigrationException();
+        }
 
         $className = sprintf('Version%s', (new DateTime())->format('YmdHis'));
 
