@@ -80,7 +80,7 @@ class Configuration
 
     /**
      * @param int|null $version
-     * @return array
+     * @return array<int, string>
      */
     public function versionsUp(?int $version): array
     {
@@ -94,7 +94,7 @@ class Configuration
 
     /**
      * @param int|null $version
-     * @return array
+     * @return array<int, string>
      */
     public function versionsDown(?int $version): array
     {
@@ -107,7 +107,7 @@ class Configuration
     }
 
     /**
-     * @return array
+     * @return int[]
      */
     private function migratedVersions(): array
     {
@@ -119,13 +119,19 @@ class Configuration
     }
 
     /**
-     * @return array
+     * @return array<int, string>
      */
     public function versions(): array
     {
         $files = [];
+        $fileList = scandir($this->directory);
+        if ($fileList === false) {
+            throw new InvalidArgumentException(
+                sprintf('Directory path [%s] is not reachable!', $this->directory)
+            );
+        }
 
-        foreach (scandir($this->directory) as $fileName){
+        foreach ($fileList as $fileName){
 
             if(in_array($fileName, ['.', '..'])){
                 continue;
