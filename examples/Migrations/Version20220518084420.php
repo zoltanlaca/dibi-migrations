@@ -4,25 +4,18 @@ declare(strict_types=1);
 namespace Zoltanlaca\DibiMigrations\Examples\Migrations;
 
 use Dibi\Connection;
+use Dibi\Exception;
 use Zoltanlaca\DibiMigrations\AbstractMigration;
 
-/**
- * Class Version20220518084420
- * @package Zoltanlaca\DibiMigrations\Examples\Migrations
- */
 final class Version20220518084420 extends AbstractMigration
 {
-    /**
-     * @return string
-     */
     public function getDescription(): string
     {
         return 'Table ' . $this->version();
     }
 
     /**
-     * @param Connection $connection
-     * @return void
+     * @throws Exception
      */
     public function up(Connection $connection): void
     {
@@ -40,8 +33,7 @@ final class Version20220518084420 extends AbstractMigration
     }
 
     /**
-     * @param Connection $connection
-     * @return void
+     * @throws Exception
      */
     public function down(Connection $connection): void
     {
