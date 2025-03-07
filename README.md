@@ -12,7 +12,8 @@ composer require zoltanlaca/dibi-migrations
 <?php
 declare(strict_types=1);
 
-use Dibi\Connection;use Zoltanlaca\DibiMigrations\Configuration;
+use Dibi\Connection;
+use Zoltanlaca\DibiMigrations\Configuration;
 use Zoltanlaca\DibiMigrations\Exceptions\ConnectionException;
 use Zoltanlaca\DibiMigrations\Migrations;
 
