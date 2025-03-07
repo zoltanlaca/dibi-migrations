@@ -14,65 +14,30 @@ use function sprintf;
 use function str_replace;
 use function strtr;
 
-/**
- * Class Configuration
- */
-class Configuration
+readonly class Configuration
 {
-    private Connection $connection;
-    private string $directory;
-    private string $namespace;
-
-    private string $tableName;
-
-    /**
-     * @param Connection $connection
-     * @param string $directory
-     * @param string $namespace
-     * @param string $tableName
-     */
-    public function __construct(Connection $connection, string $directory, string $namespace, string $tableName)
+    public function __construct(
+        private Connection $connection,
+        private string     $directory,
+        private string     $namespace,
+        private string     $tableName
+    )
     {
-        $this->connection = $connection;
-
-        if(!is_dir($directory)){
+        if (!is_dir($directory)) {
             throw new InvalidArgumentException(
-                sprintf('Directory path [%s] is not reachable!', $directory)
+                message: sprintf(
+                    format: 'Directory path [%s] is not reachable!',
+                    values: $directory
+                )
             );
         }
-
-        $this->directory = $directory;
-        $this->namespace = $namespace;
-        $this->tableName = $tableName;
     }
 
-    /**
-     * @return string
-     */
     public function getDirectory(): string
     {
         return $this->directory;
     }
 
-    /**
-     * @return string
-     */
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTableName(): string
-    {
-        return $this->tableName;
-    }
-
-    /**
-     * @return Connection
-     */
     public function connection(): Connection
     {
         return $this->connection;
@@ -93,29 +58,20 @@ class Configuration
     }
 
     /**
-     * @param int|null $version
-     * @return array<int, string>
-     */
-    public function versionsDown(?int $version): array
-    {
-        $migratedVersionList = $this->migratedVersions();
-
-        return array_filter($this->versions(), function (string $className) use ($version, $migratedVersionList): bool {
-            $ver = $this->versionFromClassName($className);
-            return in_array($ver, $migratedVersionList) && (is_null($version) || $ver > $version);
-        });
-    }
-
-    /**
      * @return int[]
      */
     private function migratedVersions(): array
     {
         return array_keys(
-                $this->connection->select('version')
-                    ->from($this->getTableName())
-                    ->fetchAssoc('version')
+            $this->connection->select('version')
+                ->from($this->getTableName())
+                ->fetchAssoc('version')
         );
+    }
+
+    public function getTableName(): string
+    {
+        return $this->tableName;
     }
 
     /**
@@ -127,13 +83,16 @@ class Configuration
         $fileList = scandir($this->directory);
         if ($fileList === false) {
             throw new InvalidArgumentException(
-                sprintf('Directory path [%s] is not reachable!', $this->directory)
+                message: sprintf(
+                    format: 'Directory path [%s] is not reachable!',
+                    values: $this->directory
+                )
             );
         }
 
-        foreach ($fileList as $fileName){
+        foreach ($fileList as $fileName) {
 
-            if(in_array($fileName, ['.', '..'])){
+            if (in_array($fileName, ['.', '..'])) {
                 continue;
             }
 
@@ -144,19 +103,6 @@ class Configuration
         return $files;
     }
 
-    /**
-     * @param string $fileName
-     * @return string
-     */
-    private function classFromFileName(string $fileName): string
-    {
-        return sprintf('\\%s\\%s', $this->getNamespace(), str_replace('.php', '', $fileName));
-    }
-
-    /**
-     * @param string $fileName
-     * @return int
-     */
     private function versionFromFileName(string $fileName): int
     {
         return (int)strtr($fileName, [
@@ -165,10 +111,16 @@ class Configuration
         ]);
     }
 
-    /**
-     * @param string $className
-     * @return int
-     */
+    private function classFromFileName(string $fileName): string
+    {
+        return sprintf('\\%s\\%s', $this->getNamespace(), str_replace('.php', '', $fileName));
+    }
+
+    public function getNamespace(): string
+    {
+        return $this->namespace;
+    }
+
     public function versionFromClassName(string $className): int
     {
         return (int)strtr($className, [
@@ -176,5 +128,19 @@ class Configuration
             '\\' . $this->getNamespace() => '',
             '\Version' => '',
         ]);
+    }
+
+    /**
+     * @param int|null $version
+     * @return array<int, string>
+     */
+    public function versionsDown(?int $version): array
+    {
+        $migratedVersionList = $this->migratedVersions();
+
+        return array_filter($this->versions(), function (string $className) use ($version, $migratedVersionList): bool {
+            $ver = $this->versionFromClassName($className);
+            return in_array($ver, $migratedVersionList) && (is_null($version) || $ver > $version);
+        });
     }
 }

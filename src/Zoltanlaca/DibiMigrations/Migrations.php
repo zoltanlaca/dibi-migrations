@@ -16,26 +16,19 @@ use function strtr;
 use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
 
-/**
- * Class Migrations
- * @package Zoltanlaca\DibiMigrations
- */
 final class Migrations
 {
-    public Configuration $configuration;
-
     /**
-     * @param Configuration $configuration
      * @throws ConnectionException
      */
-    public function __construct(Configuration $configuration)
+    public function __construct(
+        public Configuration $configuration
+    )
     {
-        $this->configuration = $configuration;
         $this->boot();
     }
 
     /**
-     * @return void
      * @throws ConnectionException
      */
     private function boot(): void
@@ -58,13 +51,11 @@ final class Migrations
                     );
             }
         } catch (Exception $exception){
-            throw new ConnectionException($exception->getMessage(), $exception->getCode(), $exception);
+            throw ConnectionException::fromException($exception);
         }
     }
 
     /**
-     * @param int $version
-     * @return void
      * @throws ConnectionException
      */
     private function afterUp(int $version): void
@@ -75,13 +66,11 @@ final class Migrations
                     'version' => $version,
                 ])->execute();
         } catch (Exception $exception){
-            throw new ConnectionException($exception->getMessage(), $exception->getCode(), $exception);
+            throw ConnectionException::fromException($exception);
         }
     }
 
     /**
-     * @param int $version
-     * @return void
      * @throws ConnectionException
      */
     private function afterDown(int $version): void
@@ -92,18 +81,15 @@ final class Migrations
                 ->where('version = %i', $version)
                 ->execute();
         } catch (Exception $exception){
-            throw new ConnectionException($exception->getMessage(), $exception->getCode(), $exception);
+            throw ConnectionException::fromException($exception);
         }
     }
 
     /**
-     * @param int|null $version
-     * @return void
      * @throws ConnectionException
      */
     public function migrateUp(?int $version = null): void
     {
-        /** @var string $className */
         foreach ($this->configuration->versionsUp($version) as $migrationVersion => $className) {
 
             /** @var AbstractMigration $class */
@@ -115,7 +101,7 @@ final class Migrations
             try {
                 $class->up($this->configuration->connection());
             } catch (Exception $exception){
-                throw new ConnectionException($exception->getMessage(), $exception->getCode(), $exception);
+                throw ConnectionException::fromException($exception);
             }
 
             $this->afterUp($migrationVersion);
@@ -124,28 +110,20 @@ final class Migrations
         }
     }
 
-    /**
-     * @param int $version
-     * @param string $message
-     * @return void
-     */
     public function consoleWrite(int $version, string $message): void
     {
         echo sprintf('[%s] v.%d, %s',
-            (new DateTime())->format('Y-m-d H:i:s'),
+            new DateTime()->format('Y-m-d H:i:s'),
             $version,
             $message
         ) . PHP_EOL;
     }
 
     /**
-     * @param int|null $version
-     * @return void
      * @throws ConnectionException
      */
     public function migrateDown(?int $version = null): void
     {
-        /** @var string $className */
         foreach ($this->configuration->versionsDown($version) as $migrationVersion => $className) {
             /** @var AbstractMigration $class */
             $class = new $className($this);
@@ -156,7 +134,7 @@ final class Migrations
             try {
                 $class->down($this->configuration->connection());
             } catch (Exception $exception){
-                throw new ConnectionException($exception->getMessage(), $exception->getCode(), $exception);
+                throw ConnectionException::fromException($exception);
             }
 
             $this->afterDown($migrationVersion);
@@ -166,7 +144,6 @@ final class Migrations
     }
 
     /**
-     * @return string
      * @throws CannotCreateMigrationException
      */
     public function create(): string
@@ -176,7 +153,7 @@ final class Migrations
             throw new CannotCreateMigrationException();
         }
 
-        $className = sprintf('Version%s', (new DateTime())->format('YmdHis'));
+        $className = sprintf('Version%s', new DateTime()->format('YmdHis'));
 
 
         $template = strtr($template, [

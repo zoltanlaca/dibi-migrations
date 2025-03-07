@@ -1,31 +1,31 @@
 {
-    "name": "zoltanlaca/dibi-migrations",
-    "description": "Dibi Database Migrations Library",
-    "type": "library",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Zoltanlaca\\DibiMigrations\\": "src/Zoltanlaca/DibiMigrations"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Zoltanlaca\\DibiMigrations\\Examples\\": "examples"
-        }
-    },
-    "authors": [
-        {
-            "name": "Zoltan Laca",
-            "email": "lacazoltan@gmail.com",
-            "homepage": "https://github.com/zoltanlaca",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "php": "^8.3",
-        "dibi/dibi": "^5.0"
-    },
-    "require-dev": {
-        "phpstan/phpstan": "^1.11"
+  "name": "zoltanlaca/dibi-migrations",
+  "description": "Dibi Database Migrations Library",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Zoltanlaca\\DibiMigrations\\": "src/Zoltanlaca/DibiMigrations"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Zoltanlaca\\DibiMigrations\\Examples\\": "examples"
+    }
+  },
+  "authors": [
+    {
+      "name": "Zoltan Laca",
+      "email": "lacazoltan@gmail.com",
+      "homepage": "https://github.com/zoltanlaca",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "dibi/dibi": "^5.0"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^2.1"
+  }
 }
